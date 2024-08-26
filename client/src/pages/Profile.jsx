@@ -3,6 +3,8 @@ import {useSelector} from 'react-redux'
 import {app} from '../firebase';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice';
+import { signOutUserStart, signOutUserSuccess, signOutUserFailure } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 
 
@@ -21,11 +23,43 @@ export default function Profile() {
   console.log(fileUploadError);
   console.log(formData.avatar);
 
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch('./api/auth/signout');
+      const data = await res.json();
+      if(data.success === false) {
+        dispatch(signOutUserFailure(error.message));
+        return;
+      }
+      dispatch(signOutUserSuccess(data));
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  }
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id] : e.target.value
     })
+  }
+
+  const handleDelete = async (e) => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method : 'DELETE'
+      })
+      const data = await res.json();
+      if(data.success === false) {
+        dispatch(deleteUserFailure(error.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -112,8 +146,8 @@ export default function Profile() {
         {/* <button className='bg-green-700 uppercase p-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80'>create listing</button> */}
       </form>
       <div className='mt-5 flex justify-between'>
-        <span className='text-rose-700 cursor-pointer'>Delete Account</span>
-        <span className='text-rose-700 cursor-pointer'>Sign out</span>
+        <span className='text-rose-700 cursor-pointer' onClick={handleDelete}>Delete Account</span>
+        <span className='text-rose-700 cursor-pointer' onClick={handleSignOut}>Sign out</span>
       </div>
       <p className='text-red-700 mt-5'>{error ? error : ""}</p>
       <p className='text-green-700 mt-5'>{UpdateSuccess ? "Profile is updated successfully!" : ""}</p>
