@@ -6,6 +6,7 @@ import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/
 import { deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice';
 import { signOutUserStart, signOutUserSuccess, signOutUserFailure } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom'
 
 
 export default function Profile() {
@@ -143,7 +144,7 @@ export default function Profile() {
         <input type="email" placeholder = 'email' onChange={handleChange} defaultValue={currentUser.email} className='p-3 rounded-lg' id='email'/>
         <input type="password" placeholder = 'password' onChange={handleChange} className='p-3 rounded-lg' id='password'/>
         <button className='bg-slate-700 uppercase p-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80' disabled = {loading} >{loading ? 'Loading...' : 'update'}</button>
-        {/* <button className='bg-green-700 uppercase p-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80'>create listing</button> */}
+        <Link to = {"/create-listing"} className='bg-green-700 uppercase p-3 rounded-lg text-white hover:opacity-95 text-center'>create listing</Link>
       </form>
       <div className='mt-5 flex justify-between'>
         <span className='text-rose-700 cursor-pointer' onClick={handleDelete}>Delete Account</span>
