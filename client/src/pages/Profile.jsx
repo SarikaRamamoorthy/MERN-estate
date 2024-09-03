@@ -19,6 +19,7 @@ export default function Profile() {
   const [UpdateSuccess, setUpdateSuccess] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const [showListingsError, setShowListingsError] = useState(false);
+  const [deleteListingsError, setDeleteListingsError] = useState(false);
   const dispatch = useDispatch();
 
   // console.log(file);
@@ -63,6 +64,23 @@ export default function Profile() {
       dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
+    }
+  }
+
+  const handleListingDelete = async (listingId) => {
+    setDeleteListingsError(false);
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method : 'DELETE',
+      })
+      const data = await res.json();
+      if(data.success === false) {
+        setDeleteListingsError(true);
+        return;
+      }
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
+    } catch (error) {
+      setDeleteListingsError(true);
     }
   }
 
@@ -183,11 +201,14 @@ export default function Profile() {
               <p className='font-semibold text-slate-700 hover:underline truncate'>{listing.name}</p>
             </Link>
             <div className='flex flex-col items-center'>
-              <button className='text-red-700 font-semibold uppercase text-sm'>Delete</button>
+              <button onClick={() => handleListingDelete(listing._id)} className='text-red-700 font-semibold uppercase text-sm'>Delete</button>
               <button className='text-green-700 font-semibold uppercase text-sm'>Edit</button>
             </div>
           </div>
         ))}
+        {
+          deleteListingsError && <p className='text-red-700 font-semibold text-center my-3'>Error occured during deletion!</p>
+        }
       </div>}
     </div>
   )
