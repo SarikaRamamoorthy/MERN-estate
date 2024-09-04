@@ -20,13 +20,14 @@ export default function Profile() {
   const [userListings, setUserListings] = useState([]);
   const [showListingsError, setShowListingsError] = useState(false);
   const [deleteListingsError, setDeleteListingsError] = useState(false);
+  const [updateListingsError, setUpdateListingsError] = useState(false);
   const dispatch = useDispatch();
 
   // console.log(file);
   // console.log(filePerc);
   // console.log(fileUploadError);
   // console.log(formData.avatar);
-  console.log(userListings)
+  // console.log(userListings)
 
   const handleSignOut = async () => {
     try {
@@ -202,12 +203,17 @@ export default function Profile() {
             </Link>
             <div className='flex flex-col items-center'>
               <button onClick={() => handleListingDelete(listing._id)} className='text-red-700 font-semibold uppercase text-sm'>Delete</button>
-              <button className='text-green-700 font-semibold uppercase text-sm'>Edit</button>
+              <Link to={`/update-listing/${listing._id}`}>
+                <button className='text-green-700 font-semibold uppercase text-sm'>Edit</button>
+              </Link>
             </div>
           </div>
         ))}
         {
           deleteListingsError && <p className='text-red-700 font-semibold text-center my-3'>Error occured during deletion!</p>
+        }
+        {
+          updateListingsError && <p className='text-red-700 font-semibold text-center my-3'>Error occured in updating list!</p>
         }
       </div>}
     </div>
