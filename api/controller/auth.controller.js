@@ -49,6 +49,7 @@ export const google = async (req, res, next) => {
             const token = jwt.sign({id : validUser._id}, process.env.JWT_SECRET);
             res
                 .cookie('access_token', token, {httpOnly : true})
+                // can change the life time of cookie by using maxAge
                 .status(200)
                 .json(rest);
         }
