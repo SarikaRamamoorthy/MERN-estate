@@ -12,6 +12,8 @@ import {
   FaParking,
   FaChair
 } from 'react-icons/fa'
+import {useSelector} from 'react-redux'
+import Contact from '../components/Contact';
 
 export default function Listing() {
 
@@ -21,6 +23,8 @@ export default function Listing() {
     const [error, setError] = useState(false);
     const [copied, setCopied] = useState(false);
     const param = useParams();
+    const {currentUser} = useSelector((state) => state.user)
+    const [contact, setContact] = useState(false);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -37,7 +41,7 @@ export default function Listing() {
             }
             setLoading(false);
             setListing(data);
-            console.log(data)
+            // console.log(data)
             
           } catch (error) {
             setError(true);
@@ -69,7 +73,7 @@ export default function Listing() {
                 <div>
                   {/* {console.log(listing)} */}
                   
-                  <Swiper navigation>
+                  <Swiper navigation loop>
                     {
                       listing.imageUrls.map((url) => (
                         <SwiperSlide key={url}>
@@ -90,26 +94,34 @@ export default function Listing() {
                   {
                     copied && <div className='text-slate-700 fixed bg-slate-100 z-10 top-[22%] right-[3%] p-2 rounded-md'>Link copied!</div>
                   }
-                  <div className='mx-auto max-w-4xl my-6 p-3'>
-                    <p className='text-2xl font-semibold'>
-                      {listing.name} - Rs{' '}
-                      {listing.offer ?
-                      listing.discountPrice : listing.regularPrice}
-                      {listing.type === 'rent' && ' / month'}
-                    </p>
-                    <p className='flex text-center gap-2 text-sm mt-5'> <FaMapMarkerAlt className='text-green-700 mt-1'/> { listing.address }
-                    </p>
-                    <div className='flex gap-4 mt-3  items-center'>
-                      <div className='bg-red-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>For {listing.type === 'sale' ? 'Sale' : 'Rent'}</div>
-                      {listing.offer && <div className='bg-green-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>Rs {+listing.regularPrice - +listing.discountPrice} discount</div>}
+                  <div  className='max-w-4xl mx-auto'>
+                    <div className='mx-auto max-w-4xl my-6 p-3'>
+                      <p className='text-2xl font-semibold'>
+                        {listing.name} - Rs{' '}
+                        {listing.offer ?
+                        listing.discountPrice : listing.regularPrice}
+                        {listing.type === 'rent' && ' / month'}
+                      </p>
+                      <p className='flex text-center gap-2 text-sm mt-5'> <FaMapMarkerAlt className='text-green-700 mt-1'/> { listing.address }
+                      </p>
+                      <div className='flex gap-4 mt-3  items-center'>
+                        <div className='bg-red-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>For {listing.type === 'sale' ? 'Sale' : 'Rent'}</div>
+                        {listing.offer && <div className='bg-green-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>Rs {+listing.regularPrice - +listing.discountPrice} discount</div>}
+                      </div>
+                      <p className='mt-4 text-slate-800'><span className='font-semibold text-black'>Description - </span>{listing.description}</p>
+                      <ul className='mt-3 flex flex-row gap-6 font-semibold text-green-900 text-sm flex-wrap'>
+                        <li className='flex items-center gap-1 whitespace-nowrap'> <FaBed className='text-lg'/> {listing.bedrooms > 1 ? listing.bedrooms + ' beds' : listing.bedrooms + ' bed' } </li>
+                        <li className='flex items-center gap-1 whitespace-nowrap'> <FaBath className='text-lg'/> {listing.bathrooms > 1 ? listing.bathrooms + ' baths' : listing.bathrooms + ' bath' } </li>
+                        <li className='flex items-center gap-1 whitespace-nowrap'> <FaParking className='text-lg'/> {listing.parking ? 'Parking spot' : 'No Parking' } </li>
+                        <li className='flex items-center gap-1 whitespace-nowrap'> <FaChair className='text-lg'/> {listing.furnished ? 'Furnished' : 'Unfurnished' } </li>
+                      </ul>
                     </div>
-                    <p className='mt-4 text-slate-800'><span className='font-semibold text-black'>Description - </span>{listing.description}</p>
-                    <ul className='mt-3 flex flex-row gap-6 font-semibold text-green-900 text-sm flex-wrap'>
-                      <li className='flex items-center gap-1 whitespace-nowrap'> <FaBed className='text-lg'/> {listing.bedrooms > 1 ? listing.bedrooms + ' beds' : listing.bedrooms + ' bed' } </li>
-                      <li className='flex items-center gap-1 whitespace-nowrap'> <FaBath className='text-lg'/> {listing.bathrooms > 1 ? listing.bathrooms + ' baths' : listing.bathrooms + ' bath' } </li>
-                      <li className='flex items-center gap-1 whitespace-nowrap'> <FaParking className='text-lg'/> {listing.parking ? 'Parking spot' : 'No Parking' } </li>
-                      <li className='flex items-center gap-1 whitespace-nowrap'> <FaChair className='text-lg'/> {listing.furnished ? 'Furnished' : 'Unfurnished' } </li>
-                    </ul>
+                    {
+                      currentUser && currentUser._id !== listing.userRef && !contact && (<button className='text-slate-100 bg-slate-700 uppercase p-3 rounded-lg w-full mb-8 hover:opacity-90' onClick={() => setContact(true)}>Contact Landlord</button>)
+                    }
+                    {
+                      contact && <Contact listing={listing}/>
+                    }
                   </div>
                 </div>
               )
