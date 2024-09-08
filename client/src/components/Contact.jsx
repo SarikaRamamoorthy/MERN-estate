@@ -37,7 +37,14 @@ export default function Contact({listing}) {
                 <div className='flex flex-col gap-4 mb-8'>
                     <div>Contact <span className='font-semibold'>{landlord.username}</span> for <span className='font-semibold'>{listing.name.toLowerCase()}</span></div>
                     <textarea className='w-full border p-3 rounded-lg' name="messsage" id="message" rows="2" value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Enter your message here'/>
-                    <Link to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`} className='bg-slate-700 text-slate-100 p-3 rounded-lg text-center uppercase hover:opacity-95' >send Message</Link>
+
+                    {/* adds content to default mail application */}
+                    {/* <Link to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`} className='bg-slate-700 text-slate-100 p-3 rounded-lg text-center uppercase hover:opacity-95' >send Message</Link> */}
+
+
+                    {/* adds content in gmail application
+ */}
+                    <Link to={`https://mail.google.com/mail/?view=cm&to=${landlord.email}&su=Regarding ${listing.name}&body=${message}`}  className='bg-slate-700 text-slate-100 p-3 rounded-lg text-center uppercase hover:opacity-95' >send Message</Link>
                 </div>
             }
             {
