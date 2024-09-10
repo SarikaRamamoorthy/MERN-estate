@@ -99,14 +99,14 @@ export default function Listing() {
                       <p className='text-2xl font-semibold'>
                         {listing.name} - Rs{' '}
                         {listing.offer ?
-                        listing.discountPrice : listing.regularPrice}
+                        listing.discountPrice.toLocaleString('en-IN') : listing.regularPrice.toLocaleString('en-IN')}
                         {listing.type === 'rent' && ' / month'}
                       </p>
                       <p className='flex text-center gap-2 text-sm mt-5'> <FaMapMarkerAlt className='text-green-700 mt-1'/> { listing.address }
                       </p>
                       <div className='flex gap-4 mt-3  items-center'>
                         <div className='bg-red-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>For {listing.type === 'sale' ? 'Sale' : 'Rent'}</div>
-                        {listing.offer && <div className='bg-green-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>Rs {+listing.regularPrice - +listing.discountPrice} discount</div>}
+                        {listing.offer && <div className='bg-green-900 text-slate-100 px-2 py-1 rounded-md w-[27%] text-center'>Rs {(+listing.regularPrice - +listing.discountPrice).toLocaleString('en-In')} discount</div>}
                       </div>
                       <p className='mt-4 text-slate-800'><span className='font-semibold text-black'>Description - </span>{listing.description}</p>
                       <ul className='mt-3 flex flex-row gap-6 font-semibold text-green-900 text-sm flex-wrap'>
