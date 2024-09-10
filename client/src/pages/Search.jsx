@@ -7,8 +7,23 @@ export default function Search() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [listing, setListing] = useState([]);
+    const [showMore, setShowMore] = useState(false);
     
-    console.log(listing);
+    // console.log(listing);
+
+    const onShowMoreClick = async () => {
+        const numberOfListings = listing.length;
+        const urlParams = new URLSearchParams(location.search);
+        const startIndex = numberOfListings;
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if(data.length < 9) {
+            setShowMore(false);
+        }
+        setListing([...listing, ...data]);
+    }
 
     const [sidebardata, setSidebardata] = useState({
         searchTerm : '',
@@ -60,9 +75,15 @@ export default function Search() {
 
         const fetchListing = async () => {
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`)
             const data = await res.json();
+            if(data.length > 8) {
+                setShowMore(true);
+            }else {
+                setShowMore(false);
+            }
             setLoading(false);
             setListing(data);
         }
@@ -155,6 +176,13 @@ export default function Search() {
                 { !loading && listing && listing.map((listing) => (
                     <ListingItem key={listing._id} listing={listing}/>
                 ))}
+
+                {
+                    showMore && (
+                        <button onClick={onShowMoreClick} className='text-green-700 hover:underline p-7 w-full text-center'>Show more</button>
+                    )
+                }
+
             </div>
         </div>
     </div>
